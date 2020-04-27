@@ -36,12 +36,13 @@ class MessageCon extends Controller
 		{
 			return json('你不是管理员，无权访问！');
 		}
+		
 		//$this->user_yz(); //有问题，引用成功,但是无法实现？
 		$message = new Message;
 		//获取当前页面数
         $page=$request->get('page');
 		$page=empty($page)?1:$request->get('page');
-		$pages=$message->Pages();
+		$pages=$message->Pages(1);//函数有三种类型
 		if($page>$pages||$page<=0){
 		    return json(["return"=>'页码不能超过总页数！']);
 		}
@@ -52,7 +53,7 @@ class MessageCon extends Controller
 	//添加公告
 	public function add()
 	{
-		/* if(!Session::get('user_data'))
+		if(!Session::get('user_data'))
 		{
 			return json('请登陆！');
 		}
@@ -60,10 +61,12 @@ class MessageCon extends Controller
 		if($type!=1 && $type!=2)
 		{
 			return json('你不是管理员，无权访问！');
-		} */
+		}
+		
 		//$this->user_yz(); //有问题，引用成功,但是无法实现？
 		$data = input('post.');
 		$data['uid1'] = Session::get('user_data.id');
+		$data['time'] = date('Y-m-d H:i:s');
 		// 数据验证
 		$result	= $this->validate($data,'Message'); 
 		//验证收件人是否存在
@@ -96,6 +99,7 @@ class MessageCon extends Controller
 		{
 			return json('你不是管理员，无权访问！');
 		}
+		
 		//$this->user_yz(); //有问题，引用成功,但是无法实现？
 		$id=$request->get('id');
 		$message = Message::get($id);
@@ -151,6 +155,7 @@ class MessageCon extends Controller
 		{
 			return json('你不是管理员，无权访问！');
 		}
+		
 		//$this->user_yz(); //有问题，引用成功,但是无法实现？
 		$id=$request->get('id');
 		$message = Message::get($id);
@@ -172,12 +177,13 @@ class MessageCon extends Controller
 		{
 			return json('请登陆！');
 		}
+		
 		$uid2 = Session::get('user_data.id');
 		$message = new Message;
 		//获取当前页面数
         $page=$request->get('page');
 		$page=empty($page)?1:$request->get('page');
-		$pages=$message->Pages();
+		$pages=$message->Pages(2,$uid2);
 		if($page>$pages||$page<=0){
 		    return json(['error'=>'页码不能超过总页数！']);
 		}
@@ -197,13 +203,14 @@ class MessageCon extends Controller
 		{
 			return json('你不是管理员，无权访问！');
 		}
+		
 		//$this->user_yz(); //有问题，引用成功,但是无法实现？
 		$uid1 = Session::get('user_data.id');
 		$message = new Message;
 		//获取当前页面数
 	    $page=$request->get('page');
 		$page=empty($page)?1:$request->get('page');
-		$pages=$message->Pages();
+		$pages=$message->Pages(3,$uid1);
 		if($page>$pages||$page<=0){
 		    return json(['error'=>'页码不能超过总页数！']);
 		}
