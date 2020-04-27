@@ -24,7 +24,7 @@ class AdvertiseCon extends Controller
 		//$this->user_yz(); //有问题，引用成功,但是无法实现？
 		$advertise = new Advertise;
 		//获取当前页面数
-      $page=$request->get('page');
+        $page=$request->get('page');
 		$page=empty($page)?1:$request->get('page');
 		$pages=$advertise->Pages();
 		if($page>$pages||$page<=0){
@@ -50,6 +50,11 @@ class AdvertiseCon extends Controller
 		$data = input('post.');
 		// 数据验证
 		$result	= $this->validate($data,'Advertise');
+		//文件是否输入
+		if(!$request->file('file'))
+		{
+			return json('请选择上传图片！');
+		}
 		$file=$request->file('file');
 		//调用控制器中的文件进行验证
 		$result = $this->validate(['file' => $file],
@@ -116,11 +121,8 @@ class AdvertiseCon extends Controller
 				['file.require' => '请选择上传文件','file.image'=>'必须是图片哦','file.fileExt'=>'文件格式不对']);
 			//移动到框架图片目录下
 			$info = $file->move(ROOT_PATH.'public' . DS . 'static' . DS . 'picture' . DS . 'advertise',date('Ymd-His'));
-			if(!$info)
-			{
-				return json('文件上传失败!');
-			}
-			$advertise -> link = DS . 'static' . DS . 'picture' . DS . 'advertise' . DS . $info->getSaveName();
+			$name=$info->getSaveName();
+			$advertise -> link = DS . 'static' . DS . 'picture' . DS . 'advertise' . DS . $name;
 		}
 		if	(false != $advertise ->save())
 		{
